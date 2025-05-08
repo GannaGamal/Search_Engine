@@ -1,0 +1,61 @@
+@using Search_Engine.Dtos
+@model IEnumerable<SearchResultDto>
+@{
+    var word = Context.Request.Query["word"].ToString();
+    string orderby = "count";
+    if (Context.Request.Query["orderby"].ToString() != "") orderby = Context.Request.Query["orderby"].ToString();
+}
+<link rel="stylesheet" href="~/css/StyleSheet.css" />
+<div class="search-container">
+    <div class="logo">
+        <img src="~/logo_.png" alt="FireDogs Logo" />
+    </div>
+
+    <form method="get" id="searchForm" asp->
+        <div class="form-group">
+            <div class="search-bar">
+                <input type="text" name="word" value="@word" placeholder="Enter word to search" class="form-control" />
+                <input type="hidden" name="orderby" id="orderbyInput" value="@orderby" />
+                <button type="submit" class="btn-search" style="background-color: #ffffff">
+                    <i class="search-icon" style="background-color: #ffffff">&#128269;</i>
+                </button>
+            </div>
+            <div class="button-group">
+                <button type="button" class="orderby-btn @(orderby == "count" ? "selected" : "")" onclick="setOrderBy('count')">Word Count</button>
+                <button type="button" class="orderby-btn @(orderby == "pagerank" ? "selected" : "")" onclick="setOrderBy('pagerank')">Page Rank</button>
+            </div>
+        </div>
+    </form>
+
+    <script>
+        function setOrderBy(order) {
+            document.getElementById('orderbyInput').value = order;
+            document.getElementById('searchForm').submit();
+        }
+    </script>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="results-list">
+            @foreach (var result in Model)
+            {
+                <div class="result-item">
+                    <a href="@result.UrlName" target="_blank">@result.UrlName</a>
+                    @if (orderby == "count")
+                    {
+                        <div class="count-info">
+                            @if (!string.IsNullOrEmpty(result.FirstWord))
+                            {
+                                <span>@result.FirstWord: @result.FirstWordCount</span>
+                            }
+                            @if (!string.IsNullOrEmpty(result.SecondWord))
+                            {
+                                <span> | @result.SecondWord: @result.SecondWordCount</span>
+                            }
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    }
+</div>
