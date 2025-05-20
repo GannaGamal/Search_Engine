@@ -2,7 +2,7 @@
 
 A simple yet powerful search engine web app built using ASP.NET MVC. The application allows users to perform keyword-based searches on a set of documents. Results are ranked either by frequency of the keywords or by a custom scoring rank — as chosen by the user.
 
----
+--- 
 
 ## 📌 Features
 
